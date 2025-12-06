@@ -1,7 +1,6 @@
 package org.kdh.mypage.service;
 
-import org.kdh.mypage.domain.TodoList;
-import org.kdh.mypage.domain.User;
+import org.kdh.mypage.domain.Todo;
 import org.kdh.mypage.dto.TodoListDTO;
 
 import java.util.List;
@@ -13,8 +12,8 @@ public interface TodoListService {
   void updateTodoList(TodoListDTO todoListDTO);
   List<TodoListDTO> findAllTodoLists();
 
-  default TodoList dtoToEntity(TodoListDTO todoListDTO) {
-    TodoList todoList = TodoList.builder()
+  default Todo dtoToEntity(TodoListDTO todoListDTO) {
+    Todo todo = Todo.builder()
         .todoId(todoListDTO.getTodoId())
         .content(todoListDTO.getContent())
         .regDate(todoListDTO.getRegDate())
@@ -22,9 +21,9 @@ public interface TodoListService {
         .is_complete(todoListDTO.is_complete())
 
         .build();
-    return todoList;
+    return todo;
   }
-  default TodoListDTO EntityToDTO(TodoList todoList) {
+  default TodoListDTO EntityToDTO(Todo todo) {
     TodoListDTO todoListDTO = TodoListDTO.builder()
         .todoId()
 

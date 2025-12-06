@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TodoList {
+public class Todo {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long todoId;
