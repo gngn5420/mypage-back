@@ -9,19 +9,18 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Habit {
-
+public class HabitLog {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long habitId;
+  private Long logId;
 
   @Column(nullable = false)
-  private String name;
+  private String date; // YYYY-MM-DD
 
   @Column(nullable = false)
-  private String emoji; // 이모지
+  private boolean checked; // 체크 표시
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "uid", referencedColumnName = "id", nullable = false, updatable = false)
-  private User user;
+  @JoinColumn(name = "habit_id", nullable = false)
+  private Habit habit;
 }

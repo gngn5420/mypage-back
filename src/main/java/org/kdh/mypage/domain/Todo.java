@@ -2,35 +2,38 @@ package org.kdh.mypage.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
-@ToString
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Todo {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long todoId;
+  private Long todoId; // 할 일 번호
+
   @Column(nullable = false)
-  private String content;
+  private String content; // 내용
+
   @CreationTimestamp
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-  private LocalDateTime regDate;
-  @CreationTimestamp
+  private LocalDateTime regDate; // 등록일
+
+  @UpdateTimestamp
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-  private LocalDateTime updateDate;
-  private boolean is_complete;
+  private LocalDateTime updateDate; // 업데이트 일
+
+  private boolean complete;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="uid", referencedColumnName = "id", updatable = false, nullable = false)
-  private User user;
-
+  @JoinColumn(name = "uid", referencedColumnName = "id", nullable = false)
+  private User user; // 사용자 아이디
 }

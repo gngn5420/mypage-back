@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HabitDTO {
-  private String username;
+  private String name;
   private Long habitId;
-  private String content;
-  private boolean is_checked;
+  private String emoji;
 
 }

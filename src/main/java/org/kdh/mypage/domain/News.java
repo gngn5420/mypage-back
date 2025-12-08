@@ -2,31 +2,37 @@ package org.kdh.mypage.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
-@ToString
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Memo {
+public class News {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long memoId;
-  private String title;
-  private String content;
-  private String source_url;
+  private Long newsId;
+
+  @Column(nullable = false)
+  private String title; // 제목
+
+  @Column(columnDefinition = "TEXT")
+  private String summary; // 요약
+
+  @Column(nullable = false)
+  private String link; // 링크
+
   @CreationTimestamp
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-  private LocalDateTime regDate;
+  private LocalDateTime regDate; // 저장한 날짜
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name="uid", referencedColumnName = "id", updatable = false, nullable = false)
+  @JoinColumn(name="uid", referencedColumnName = "id", nullable = false)
   private User user;
 }

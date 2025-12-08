@@ -39,6 +39,7 @@ public class JwtProviderImpl implements JwtProvider {
 
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
+                .claim("userId", userPrincipal.getId())
                 .claim("roles", authorites)
                 .setExpiration(new Date(System.currentTimeMillis()+JWT_EXPIRATION_IN_MS))
                 .signWith(key, SignatureAlgorithm.HS512)
@@ -60,6 +61,7 @@ public class JwtProviderImpl implements JwtProvider {
         UserDetails userDetails =UserPrincipal.builder()
                 .username(username)
                 .id(userId)
+                .password("N/A") // null을 대체하는 임시 문자열
                 .authorities(authorities)
                 .build();
         if(username==null){

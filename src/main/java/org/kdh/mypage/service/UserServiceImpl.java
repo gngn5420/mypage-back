@@ -23,18 +23,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword())); // password 인코딩해서 저장하기
-        user.setRole(Role.USER);
+        user.setRole(Role.USER); // 기본 role = USER 자동 설정
         //user.setCreateTime(LocalDateTime.now());
         return userRepository.save(user);
     }
 
-    @Override
-    public User findUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
-        return user;
-    }
+//    @Override
+//    public User findUserByUsername(String username) {
+//        User user = userRepository.findByUsername(username);
+//        return user;
+//    }
 
-    @Override
+  @Override
+  public User findUserByUsername(String username) {
+    return userRepository.findByUsername(username)
+        .orElseThrow(() -> new RuntimeException("User not found: " + username));
+  }
+
+  @Override
     public void changeRole(Role newRole, String username) {
         userRepository.updateUserRoles(username, newRole);
     }
