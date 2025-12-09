@@ -41,6 +41,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.POST, "/api/user/register").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/user/login").permitAll()
             .anyRequest().permitAll()   // ← 여기!!
+
         )
 
         // 🔥 JWT 필터는 그대로 둔다 (체인이 실제로 도는지만 확인)

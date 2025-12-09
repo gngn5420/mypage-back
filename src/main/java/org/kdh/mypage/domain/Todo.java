@@ -24,11 +24,11 @@ public class Todo {
   private String content; // 내용
 
   @CreationTimestamp
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   private LocalDateTime regDate; // 등록일
 
   @UpdateTimestamp
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
   private LocalDateTime updateDate; // 업데이트 일
 
   private boolean complete;
