@@ -39,6 +39,7 @@ public UserDetails loadUserByUsername(String username)
       .password(user.getPassword())
       .email(user.getEmail())
       .nickname(user.getNickname())
+      .role(user.getRole().name()) // String으로 적어줘야함.
       .authorities(authorities)
       .build();
 }

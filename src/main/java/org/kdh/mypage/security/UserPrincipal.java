@@ -17,6 +17,7 @@ public class UserPrincipal implements UserDetails {
   private String email;
   private String nickname;
 
+  private String role; // 로그인 권한 (role)
   private Collection<? extends GrantedAuthority> authorities;
 
 //  private User user; // 실제 User 엔티티 보관

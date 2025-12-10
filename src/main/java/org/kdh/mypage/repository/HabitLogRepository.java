@@ -9,4 +9,8 @@ import java.util.Optional;
 public interface HabitLogRepository extends JpaRepository<HabitLog, Long> {
  // 습관, 날짜 -> 날짜에 해당하는 습관로그 다 가져오기
   Optional<HabitLog> findByHabitAndDate(Habit habit, String date);
+
+  // 습관 삭제 전에 로그 선삭제
+  void deleteByHabit(Habit habit);
+
 }

@@ -28,7 +28,6 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
     http
         .csrf(AbstractHttpConfigurer::disable)
         .cors(c -> c.configurationSource(corsConfigurationSource()))
@@ -36,15 +35,23 @@ public class SecurityConfig {
         .formLogin(AbstractHttpConfigurer::disable)
         .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-        // 🔥 일단 전체 permitAll 로 막힘 완전 제거
+        // permitAll
+//        .authorizeHttpRequests(auth -> auth
+//            .requestMatchers(HttpMethod.POST, "/api/user/register").permitAll()
+//            .requestMatchers(HttpMethod.POST, "/api/user/login").permitAll()
+//            .anyRequest().permitAll()   // ← 여기!!
+//
+//        )
+
+        // security 접근 허용
         .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/error").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/user/register").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/user/login").permitAll()
-            .anyRequest().permitAll()   // ← 여기!!
-
+            .anyRequest().authenticated()
         )
 
-        // 🔥 JWT 필터는 그대로 둔다 (체인이 실제로 도는지만 확인)
+        // JWT 필터는
         .addFilterBefore(
             new JwtAuthorizationFilter(jwtProvider),
             UsernamePasswordAuthenticationFilter.class
@@ -57,23 +64,11 @@ public class SecurityConfig {
   public BCryptPasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
-//  @Bean
-//  public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-//    return http.getSharedObject(AuthenticationManager.class);
-//  }
-
-
-//  @Bean
-//  public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-//    return config.getAuthenticationManager();
-//  }
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
     return config.getAuthenticationManager();
   }
-
-
 
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {

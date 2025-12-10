@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.kdh.mypage.domain.Role;
 import org.kdh.mypage.domain.User;
+import org.kdh.mypage.domain.UserStatus;
+import org.kdh.mypage.dto.RegisterRequestDTO;
 import org.kdh.mypage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,41 +19,71 @@ import java.util.List;
 @Log4j2
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
-    @Override
-    public User saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // password 인코딩해서 저장하기
-        user.setRole(Role.USER); // 기본 role = USER 자동 설정
-        //user.setCreateTime(LocalDateTime.now());
-        return userRepository.save(user);
+  private final UserRepository userRepository;
+  private final BCryptPasswordEncoder passwordEncoder;
+
+  // UserService 영역 -----------------------------------------------
+  @Override
+  public User saveUser(User user) {
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+    // ✅ role이 비어있을 때만 기본 USER
+    if (user.getRole() == null) {
+      user.setRole(Role.USER);
     }
 
-//    @Override
-//    public User findUserByUsername(String username) {
-//        User user = userRepository.findByUsername(username);
-//        return user;
-//    }
+    // ✅ status가 비어있을 때만 기본 ACTIVE
+    if (user.getStatus() == null) {
+      user.setStatus(UserStatus.ACTIVE);
+    }
 
+    return userRepository.save(user);
+  }
+
+  // 회원가입 설정 ------------------------------------------
+  @Override
+  public void registerUser(RegisterRequestDTO dto) {
+    if (userRepository.existsByUsername(dto.getUsername())) {
+      throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+    }
+
+    if (userRepository.existsByEmail(dto.getEmail())) {
+      throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+    }
+
+    User user = new User();
+    user.setUsername(dto.getUsername());
+    user.setNickname(dto.getNickname());
+    user.setEmail(dto.getEmail());
+    user.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+    user.setRole(Role.USER);
+    user.setStatus(UserStatus.ACTIVE);
+
+    userRepository.save(user);
+  }
+
+  // 회원 찾기 ------------------------
   @Override
   public User findUserByUsername(String username) {
     return userRepository.findByUsername(username)
         .orElseThrow(() -> new RuntimeException("User not found: " + username));
   }
 
+  // Role 역할 변경---------------------
   @Override
-    public void changeRole(Role newRole, String username) {
-        userRepository.updateUserRoles(username, newRole);
-    }
+  public void changeRole(Role newRole, String username) {
+    userRepository.updateUserRoles(username, newRole);
+  }
 
-    @Override
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
-    }
+  @Override
+  public void deleteUser(Long id) {
+    userRepository.deleteById(id);
+  }
 
-    @Override
-    public List<User> findAllUsers() {
-        return userRepository.findAll();
-    }
+  @Override
+  public List<User> findAllUsers() {
+    return userRepository.findAll();
+  }
 }

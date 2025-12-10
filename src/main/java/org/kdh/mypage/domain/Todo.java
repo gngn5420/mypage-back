@@ -1,6 +1,7 @@
 package org.kdh.mypage.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,6 +34,7 @@ public class Todo {
 
   private boolean complete;
 
+  @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "uid", referencedColumnName = "id", nullable = false)
   private User user; // 사용자 아이디

@@ -2,6 +2,7 @@ package org.kdh.mypage.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.kdh.mypage.dto.HabitDTO;
+import org.kdh.mypage.dto.HabitLogDTO;
 import org.kdh.mypage.dto.HabitWithLogsDTO;
 import org.kdh.mypage.security.UserPrincipal;
 import org.kdh.mypage.service.HabitService;
@@ -67,5 +68,28 @@ public class HabitController {
     HabitDTO updated = habitService.updateHabitName(habitId, dto.getName(), user.getUsername());
     return ResponseEntity.ok(updated);
   }
+
+  // 토글 상태 체크 시 결과 화면에 반환
+  @PutMapping("/{habitId}/toggle")
+  public ResponseEntity<HabitLogDTO> toggleHabit(
+      @AuthenticationPrincipal UserPrincipal user,
+      @PathVariable Long habitId,
+      @RequestParam String date
+  ) {
+    HabitLogDTO updated = habitService.toggleHabitCheckAndReturn(habitId, date, user.getUsername());
+    return ResponseEntity.ok(updated);
+  }
+
+  /** 습관 이모지 수정 */
+  @PutMapping("/{habitId}/emoji")
+  public ResponseEntity<HabitDTO> updateHabitEmoji(
+      @AuthenticationPrincipal UserPrincipal user,
+      @PathVariable Long habitId,
+      @RequestBody HabitDTO dto
+  ) {
+    HabitDTO updated = habitService.updateHabitEmoji(habitId, dto.getEmoji(), user.getUsername());
+    return ResponseEntity.ok(updated);
+  }
+
 
 }
