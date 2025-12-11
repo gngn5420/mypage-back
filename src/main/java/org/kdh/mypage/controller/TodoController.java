@@ -60,19 +60,6 @@ public class TodoController {
     return ResponseEntity.ok(savedTodo);
   }
 
-//  @PutMapping("/update/{id}")
-//  public ResponseEntity<TodoDTO> updateTodo(
-//      @AuthenticationPrincipal UserPrincipal user,
-//      @PathVariable Long id,
-//      @RequestBody TodoDTO dto) {
-//
-//    System.out.println("Received dto: " + dto);
-//
-//    return ResponseEntity.ok(
-//        todoService.updateTodoContent(id, dto.getContent(), user.getUsername())
-//    );
-//  }
-
   @PutMapping("/update/{id}")
   public ResponseEntity<TodoDTO> updateTodo(
       @PathVariable Long id,  // 경로에서 id를 받음
@@ -86,15 +73,6 @@ public class TodoController {
   }
 
 
-//  @PutMapping("/toggle/{id}")
-//  public ResponseEntity<Void> toggleComplete(
-//      @AuthenticationPrincipal UserPrincipal user,
-//      @PathVariable Long id) {
-//
-//    todoService.toggleTodoComplete(id, user.getUsername());
-//    return ResponseEntity.ok().build();
-//  }
-
   @PutMapping("/toggle/{id}")
   public ResponseEntity<TodoDTO> toggleComplete(
       @AuthenticationPrincipal UserPrincipal user,
@@ -103,8 +81,6 @@ public class TodoController {
     TodoDTO updatedTodo = todoService.toggleTodoComplete(id, user.getUsername());
     return ResponseEntity.ok(updatedTodo); // 변경된 todo를 반환
   }
-
-
 
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<Void> deleteTodo(

@@ -10,6 +10,7 @@ import org.kdh.mypage.repository.HabitLogRepository;
 import org.kdh.mypage.repository.HabitRepository;
 import org.kdh.mypage.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,6 +45,7 @@ public class HabitServiceImpl implements HabitService {
   }
 
   // 습관 삭제
+  @Transactional
   @Override
   public void deleteHabit(Long habitId, String username) {
     Habit habit = habitRepository.findById(habitId)
@@ -52,8 +54,8 @@ public class HabitServiceImpl implements HabitService {
     if (!habit.getUser().getUsername().equals(username)) {
       throw new RuntimeException("권한이 없습니다.");
     }
-    // ✅ 1) 로그 먼저 삭제
-    habitLogRepository.deleteByHabit(habit);
+    // ✅ 1) 로그 먼저 삭제 (id 기반)
+    habitLogRepository.deleteByHabit_HabitId(habitId);
     // ✅ 2) 습관 삭제
     habitRepository.delete(habit);
   }

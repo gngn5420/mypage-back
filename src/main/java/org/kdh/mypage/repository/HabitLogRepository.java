@@ -12,5 +12,8 @@ public interface HabitLogRepository extends JpaRepository<HabitLog, Long> {
 
   // 습관 삭제 전에 로그 선삭제
   void deleteByHabit(Habit habit);
+  // 습관 id 기반 삭제
+  void deleteByHabit_HabitId(Long habitId);
+
 
 }

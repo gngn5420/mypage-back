@@ -35,14 +35,6 @@ public class SecurityConfig {
         .formLogin(AbstractHttpConfigurer::disable)
         .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-        // permitAll
-//        .authorizeHttpRequests(auth -> auth
-//            .requestMatchers(HttpMethod.POST, "/api/user/register").permitAll()
-//            .requestMatchers(HttpMethod.POST, "/api/user/login").permitAll()
-//            .anyRequest().permitAll()   // ← 여기!!
-//
-//        )
-
         // security 접근 허용
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/error").permitAll()

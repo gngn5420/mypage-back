@@ -52,6 +52,10 @@ public class UserServiceImpl implements UserService {
       throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
     }
 
+    if (userRepository.existsByNickname(dto.getNickname())) {
+      throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+    }
+
     User user = new User();
     user.setUsername(dto.getUsername());
     user.setNickname(dto.getNickname());
