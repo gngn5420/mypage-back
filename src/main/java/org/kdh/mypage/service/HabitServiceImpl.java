@@ -173,6 +173,7 @@ public class HabitServiceImpl implements HabitService {
         .emoji(saved.getEmoji())
         .build();
   }
+
   // 이모지 수정
   @Override
   public HabitDTO updateHabitEmoji(Long habitId, String newEmoji, String username) {
