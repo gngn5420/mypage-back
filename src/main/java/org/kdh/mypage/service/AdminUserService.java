@@ -16,7 +16,7 @@ public interface AdminUserService {
   // 상태변경
   void updateStatus(Long id, UserStatus status);
 
-  // 소프트 삭제 (상태만 delete)
+  // 소프트 삭제 (상태만 delete) , 회원탈퇴 + 관리자 삭제 공용으로 사용
   void softDeleteUser(Long id);
 
   // 복구
@@ -24,5 +24,6 @@ public interface AdminUserService {
 
   // 완전 삭제
   void hardDeleteUser(Long id);
+
 
 }

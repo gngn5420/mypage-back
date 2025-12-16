@@ -19,4 +19,9 @@ public interface UserService {
     void deleteUser(Long id);
     List<User> findAllUsers();
 
+  // ✅ 회원탈퇴: 현재 로그인한 사용자(username 기준) 탈퇴 처리
+    void withdrawCurrentUser(String username);
+
+    // 비밀번호 변경
+    void changePassword(String username, String currentPassword, String newPassword);
 }

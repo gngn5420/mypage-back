@@ -3,6 +3,7 @@ package org.kdh.mypage.repository;
 import org.kdh.mypage.domain.Habit;
 import org.kdh.mypage.repository.projection.HabitCountProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -21,5 +22,11 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
         group by h.user.id
     """)
   List<HabitCountProjection> countByUserIds(@Param("userIds") List<Long> userIds);
+
+  // 탈퇴 시 FK부터 삭제 되도록
+  @Modifying
+  @Query("delete from Habit h where h.user.id = :userId")
+  void deleteByUserId(@Param("userId") Long userId);
+
 
 }

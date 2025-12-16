@@ -90,4 +90,33 @@ public class UserServiceImpl implements UserService {
   public List<User> findAllUsers() {
     return userRepository.findAll();
   }
+
+  // ✅ 회원탈퇴 로직
+  @Transactional
+  public void withdrawCurrentUser(String username) {
+    User user = userRepository.findByUsername(username)
+        .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+    user.setStatus(UserStatus.DELETED);
+
+    userRepository.save(user);
+  }
+
+  // 비밀번호 변경
+  @Override
+  public void changePassword(String username, String currentPassword, String newPassword) {
+    User user = userRepository.findByUsername(username)
+        .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+    // ✅ 현재 비밀번호 체크
+    if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+      // 프론트에서 구분하기 위해 의도적으로 이 문자열 사용
+      throw new IllegalArgumentException("BAD_PASSWORD");
+    }
+
+    // ✅ 새 비밀번호로 변경
+    user.setPassword(passwordEncoder.encode(newPassword));
+    userRepository.save(user);
+  }
+
 }

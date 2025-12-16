@@ -1,11 +1,11 @@
 package org.kdh.mypage.service;
 
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.kdh.mypage.domain.User;
 import org.kdh.mypage.domain.UserStatus;
 import org.kdh.mypage.dto.AdminUserDTO;
+import org.kdh.mypage.repository.HabitLogRepository;
 import org.kdh.mypage.repository.HabitRepository;
 import org.kdh.mypage.repository.TodoRepository;
 import org.kdh.mypage.repository.UserRepository;
@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Log4j2
-@Builder
 @RequiredArgsConstructor
 @Transactional
 public class AdminUserServiceImpl implements AdminUserService, AdminUserCardService {
@@ -28,6 +27,7 @@ public class AdminUserServiceImpl implements AdminUserService, AdminUserCardServ
   private final UserRepository userRepository;
   private final TodoRepository todoRepository;
   private final HabitRepository habitRepository;
+  private final HabitLogRepository habitLogRepository;
 
   // AdminUserService 구현 -----------------------------------------------------
   @Override
@@ -50,36 +50,60 @@ public class AdminUserServiceImpl implements AdminUserService, AdminUserCardServ
         .orElseThrow(() -> new RuntimeException("User not found: " + id));
 
     user.setStatus(status);
-
-    // ✅ 안전하게 명시 저장
     userRepository.save(user);
   }
 
   @Override
   public void softDeleteUser(Long id) {
-    updateStatus(id, UserStatus.DELETED);
+    User user = userRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("User not found: " + id));
+
+    // ✅ 상태를 DELETED로 바꾸고
+    user.setStatus(UserStatus.DELETED);
+
+    // @Transactional 이라 save 생략해도 되지만, 명시적으로 적고 싶으면:
+    userRepository.save(user);
   }
+
 
   @Override
   public void restoreUser(Long id) {
     updateStatus(id, UserStatus.ACTIVE);
   }
 
+  // 완전 삭제 로직
   @Override
   public void hardDeleteUser(Long id) {
     if (!userRepository.existsById(id)) {
       throw new RuntimeException("User not found: " + id);
     }
+
+    // ✅ FK 때문에 자식부터 삭제 (순서 중요: HabitLog -> Habit)
+    habitLogRepository.deleteByUserId(id);
+    habitRepository.deleteByUserId(id);
+    todoRepository.deleteByUserId(id);
+
+    // ✅ 마지막에 유저 삭제
     userRepository.deleteById(id);
   }
 
-  // AdminUserCardService---------------------------------------------------------------------
+
+  // AdminUserCardService ---------------------------------------------------------------------
   @Override
   public List<AdminUserDTO> getUsers(String status) {
 
     UserStatus st = UserStatus.valueOf(status); // "ACTIVE", "DELETED"
 
-    List<User> users = userRepository.findByStatus(st).stream()
+    List<User> users;
+    if (st == UserStatus.ACTIVE) {
+      users = userRepository.findByStatusIn(
+          List.of(UserStatus.ACTIVE, UserStatus.SUSPENDED)
+      );
+    } else {
+      users = userRepository.findByStatus(st);
+    }
+
+    users = users.stream()
         .filter(u -> !"ADMIN".equalsIgnoreCase(String.valueOf(u.getRole())))
         .toList();
 

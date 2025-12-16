@@ -3,6 +3,7 @@ package org.kdh.mypage.repository;
 import org.kdh.mypage.domain.Todo;
 import org.kdh.mypage.repository.projection.TodoCountProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -20,4 +21,11 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
         group by t.user.id
     """)
   List<TodoCountProjection> countByUserIds(@Param("userIds") List<Long> userIds);
+
+  // 회원 탈퇴 시 FK부터 삭제 되도록
+  @Modifying
+  @Query("delete from Todo t where t.user.id = :userId")
+  void deleteByUserId(@Param("userId") Long userId);
+
+
 }

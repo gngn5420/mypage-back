@@ -51,7 +51,10 @@ public class User {
 
   // 관리자가 유저 정보 관리하기 위한 필드 (정지, 삭제 등)
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
+  @Column(name = "status", nullable = false)
   private UserStatus status = UserStatus.ACTIVE;
+
+
+
 
 }
